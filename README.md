@@ -24,15 +24,18 @@
 
 **Использование:**
 - Определить параметры подключения МК к контроллеру XPT2046:
- XPT2046_ConnectionData cnt_touch = { .spi 	 = SPI1,			//Используемый spi
-		  	  	  	  	  	  	  	               .speed 	 = 4,				//Скорость spi 0...7 (0 - clk/2, 1 - clk/4, ..., 7 - clk/256)
-									                             .cs_port  = T_CS_GPIO_Port,	//Порт для управления T_CS
-									                             .cs_pin 	 = T_CS_Pin,		//Вывод порта для управления T_CS
-									                             .irq_port = T_IRQ_GPIO_Port,	//Порт для управления T_IRQ
-									                             .irq_pin  = T_IRQ_Pin,		//Вывод порта для управления T_IRQ
-									                             .exti_irq = T_IRQ_EXTI_IRQn  //Канал внешнего прерывания
-  	  	  	  	  	  	  	  	  	         };
+```sh
+ XPT2046_ConnectionData cnt_touch = {	.spi 	  = SPI1, //Используемый spi
+					.speed 	  = 4, //Скорость spi 0...7 (0 - clk/2, 1 - clk/4, ..., 7 - clk/256)
+					.cs_port  = T_CS_GPIO_Port, //Порт для управления T_CS
+					.cs_pin	  = T_CS_Pin, //Вывод порта для управления T_CS
+					.irq_port = T_IRQ_GPIO_Port, //Порт для управления T_IRQ
+					.irq_pin  = T_IRQ_Pin, //Вывод порта для управления T_IRQ
+					.exti_irq = T_IRQ_EXTI_IRQn //Канал внешнего прерывания
+};
+```
  - Объявить переменную обработчика XPT2046:
+ 
   XPT2046_Handler touch1;
  - Инициализировать обработчик XPT2046:
   XPT2046_InitTouch(&touch1, 20, &cnt_touch);
