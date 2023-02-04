@@ -1,16 +1,16 @@
 /* USER CODE BEGIN Header */
-/**
-  * Демонстрация работы с сенсорным экраном (тачскрином) на базе контроллера XPT2046 (HR2046 и т.п.)
-  * и дисплеем на базе контроллера ILI9341 (spi)
-  *
-  * Автор: VadRov
-  *
-  * https://www.youtube.com/@VadRov
-  * https://dzen.ru/vadrov
-  * https://vk.com/vadrov
-  * https://t.me/vadrov_channel
-  *
-  */
+/*
+ * Демонстрация работы с сенсорным экраном (тачскрином) на базе контроллера XPT2046 (HR2046 и т.п.)
+ * и дисплеем на базе контроллера ILI9341 (spi)
+ *
+ * Автор: VadRov
+ *
+ * https://www.youtube.com/@VadRov
+ * https://dzen.ru/vadrov
+ * https://vk.com/vadrov
+ * https://t.me/vadrov_channel
+ *
+ */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -142,9 +142,9 @@ int main(void)
 		   	   	   	   	 &lcd1,
 #endif
 		   	   	   	   	 240,
-						 310,
+						 320,
 						 ILI9341_CONTROLLER_WIDTH,
-						 310,//ILI9341_CONTROLLER_HEIGHT,
+						 ILI9341_CONTROLLER_HEIGHT,
 						 PAGE_ORIENTATION_PORTRAIT_MIRROR,
 						 ILI9341_Init,
 						 ILI9341_SetWindow,
@@ -172,7 +172,6 @@ int main(void)
   XPT2046_Handler touch1;
   XPT2046_InitTouch(&touch1, 20, &cnt_touch);
   //Калибровка тачскрина
-  touch1.fl_interrupt = 1; //Разрешаем обновление координат тачскрина в прерывании
   XPT2046_CalibrateTouch(&touch1, lcd); //Запускаем процедуру калибровки
   /* --------------------------------------------------------------------------------------------------*/
 

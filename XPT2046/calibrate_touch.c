@@ -57,7 +57,7 @@ void XPT2046_ConvertPoint(tPoint *p_d, tPoint *p_t, tCoef *coef)
 	p_d->y = (int)((p_t->x * coef->Dy1 + p_t->y * coef->Dy2 + coef->Dy3) / coef->D);
 }
 
-/* Ожидает клика по тачскрину */
+/* Ожидает клика по тачскрину (опрос в прерывании разрешен!) */
 static void read_touch(XPT2046_Handler *t)
 {
 	while (1) { //Цикл опроса тачскрина.
@@ -65,7 +65,7 @@ static void read_touch(XPT2046_Handler *t)
 			__NOP();
 		}
 		while (t->click) { //Пока есть касание тачскрина.
-			(void)XPT2046_GetTouch(t); //опрашиваем тачскрин.
+			__NOP();
 		}
 		if (t->last_click_time > 3) { //Ограничиваем минимальную длительность касания, для фильтрации случайных касаний.
 			break; //Прерываем цикл опроса тачскрина.
@@ -91,6 +91,7 @@ void XPT2046_CalibrateTouch(XPT2046_Handler *t, LCD_Handler *lcd)
 	//Таблица с дисплейными координатами для проверки после калибровки.
 	uint16_t ver_xy[] = {lcd->Width / 2, 20, lcd->Width / 2, lcd->Height - 20};
 	uint8_t f_error, i;  //Флаг ошибки при проверки калибровки и счетчик точек калибровки.
+	t->fl_interrupt = 1; //Разрешаем обновление координат тачскрина в прерывании
 	while (1) { //Пока калибровка не будет успешной.
 		i = 0;
 		LCD_Fill(lcd, COLOR_WHITE); //Очищаем дисплей.
