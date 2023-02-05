@@ -223,6 +223,8 @@ LCD_Handler* LCD_DisplayAdd(LCD_Handler *lcds,     /* указатель на с
 							uint16_t resolution2,
 							uint16_t width_controller,
 							uint16_t height_controller,
+							int16_t w_offs,
+							int16_t h_offs,
 							LCD_PageOrientation orientation,
 							DisplayInitCallback init,
 							DisplaySetWindowCallback set_win,
@@ -273,12 +275,12 @@ LCD_Handler* LCD_DisplayAdd(LCD_Handler *lcds,     /* указатель на с
 		lcd->Width_Controller = width_controller;
 		lcd->Height_Controller = height_controller;
 		if (orientation==PAGE_ORIENTATION_PORTRAIT) {
-			lcd->x_offs = 0;
-			lcd->y_offs = 0;
+			lcd->x_offs = w_offs;
+			lcd->y_offs = h_offs;
 		}
 		else {
-			lcd->x_offs = lcd->Width_Controller - lcd->Width;
-			lcd->y_offs = lcd->Height_Controller - lcd->Height;
+			lcd->x_offs = lcd->Width_Controller - lcd->Width - w_offs;
+			lcd->y_offs = lcd->Height_Controller - lcd->Height - h_offs;
 		}
 	}
 	else if (orientation==PAGE_ORIENTATION_LANDSCAPE || orientation==PAGE_ORIENTATION_LANDSCAPE_MIRROR)	{
@@ -287,12 +289,12 @@ LCD_Handler* LCD_DisplayAdd(LCD_Handler *lcds,     /* указатель на с
 		lcd->Width_Controller = height_controller;
 		lcd->Height_Controller = width_controller;
 		if (orientation==PAGE_ORIENTATION_LANDSCAPE) {
-			lcd->x_offs = 0;
-			lcd->y_offs = lcd->Height_Controller - lcd->Height;
+			lcd->x_offs = h_offs;
+			lcd->y_offs = lcd->Height_Controller - lcd->Height - w_offs;
 		}
 		else {
-			lcd->x_offs = lcd->Width_Controller - lcd->Width;
-			lcd->y_offs = 0;
+			lcd->x_offs = lcd->Width_Controller - lcd->Width - h_offs;
+			lcd->y_offs = w_offs;
 		}
 	}
 	else {

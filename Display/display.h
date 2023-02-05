@@ -185,6 +185,8 @@ LCD_Handler* LCD_DisplayAdd(LCD_Handler *lcds,			/* указатель на пе
 							uint16_t resolution2,
 							uint16_t width_controller,
 							uint16_t height_controller,
+							int16_t w_offs,
+							int16_t h_offs,
 							LCD_PageOrientation orientation,
 							DisplayInitCallback init,
 							DisplaySetWindowCallback set_win,
