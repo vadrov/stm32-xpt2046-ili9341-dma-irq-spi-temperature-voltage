@@ -1,0 +1,8 @@
+xpt2046.c:199:12:get_adc_in.constprop	22
+xpt2046.c:41:6:XPT2046_InitTouch	18
+xpt2046.c:68:9:XPT2046_GetTouch	9
+xpt2046.c:91:6:XPT2046_EXTICallback	4
+xpt2046.c:109:6:XPT2046_TIMCallback	14
+xpt2046.c:147:5:XPT2046_GetTemp	3
+xpt2046.c:164:5:XPT2046_GetVbat	3
+xpt2046.c:179:5:XPT2046_GetAux	3

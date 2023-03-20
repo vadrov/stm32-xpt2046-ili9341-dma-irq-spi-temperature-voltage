@@ -1,2 +1,2 @@
 ../XPT2046/calibrate_touch.c:54:6:XPT2046_ConvertPoint	32	static
-../XPT2046/calibrate_touch.c:85:6:XPT2046_CalibrateTouch	360	static,ignoring_inline_asm
+../XPT2046/calibrate_touch.c:85:6:XPT2046_CalibrateTouch	352	static,ignoring_inline_asm

@@ -51,7 +51,7 @@ static void CoefCalc(tPoint *p_d, tPoint *p_t, tCoef *coef, uint8_t all_points)
  * - в переменной coef (тип tCoef) принимает коэффициенты преобразования;
  * - в переменной p_d (тип tPoint) возвращает дисплейные координаты.
  */
-void XPT2046_ConvertPoint(tPoint *p_d, tPoint *p_t, tCoef *coef)
+void XPT2046_ConvertPoint(tPoint *p_d, volatile tPoint *p_t, tCoef *coef)
 {
 	p_d->x = (int)((p_t->x * coef->Dx1 + p_t->y * coef->Dx2 + coef->Dx3) / coef->D);
 	p_d->y = (int)((p_t->x * coef->Dy1 + p_t->y * coef->Dy2 + coef->Dy3) / coef->D);

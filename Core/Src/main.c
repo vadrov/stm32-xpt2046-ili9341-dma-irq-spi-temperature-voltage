@@ -3,7 +3,7 @@
  * Демонстрация работы с сенсорным экраном (тачскрином) на базе контроллера XPT2046 (HR2046 и т.п.)
  * и дисплеем на базе контроллера ILI9341 (spi)
  *
- * Автор: VadRov
+ * Copyright (C) 2022, VadRov, all right reserved.
  *
  * https://www.youtube.com/@VadRov
  * https://dzen.ru/vadrov
@@ -22,6 +22,9 @@
 #include "xpt2046.h"
 #include "calibrate_touch.h"
 #include "demo.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -50,6 +53,19 @@ static void MX_DMA_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_TIM3_Init(void);
 /* USER CODE BEGIN PFP */
+
+/* Для тех, кто не умеет пользоваться отладчиком или
+ * тех, у кого он не работает */
+/*
+static void convert64bit_to_hex(uint8_t *v, char *b)
+{
+	 b[0] = 0;
+	 sprintf(&b[strlen(b)], "0x");
+	 for (int i = 0; i < 8; i++) {
+		 sprintf(&b[strlen(b)], "%02x", v[7 - i]);
+	 }
+}
+*/
 
 /* USER CODE END PFP */
 
@@ -161,6 +177,7 @@ int main(void)
   LCD_Init(lcd); 				//Инициализация дисплея
   LCD_Fill(lcd, COLOR_RED);		//Заливка дисплея
   /*---------------------------------------------------------------------------------------------------*/
+
   /* ----------------------------------- Настройка тачскрина ------------------------------------------*/
   //Будем обмениваться данными с XPT2046 на скорости 2.625 Мбит/с (по спецификации максимум 2.0 Мбит/с).
   XPT2046_ConnectionData cnt_touch = { .spi 	 = SPI1,			//Используемый spi
@@ -174,8 +191,48 @@ int main(void)
   //Инициализация обработчика XPT2046
   XPT2046_Handler touch1;
   XPT2046_InitTouch(&touch1, 20, &cnt_touch);
-  //Калибровка тачскрина
+/* Самый простой вариант хранения в программе
+ * коэффициентов калибровки. Строку XPT2046_CalibrateTouch
+ * надо будет закомментировать */
+/*
+  tCoef coef = {.D   = 0x00022b4253626d37,
+  	  	  	  	.Dx1 = 0xffffd9e9e85d81b6,
+  	  	  	  	.Dx2 = 0x0000005a555c98ab,
+  	  	  	  	.Dx3 = 0x022dd7f0419e66b7,
+  	  	  	  	.Dy1 = 0xffffff6065e10c98,
+  	  	  	    .Dy2 = 0x0000343b820dc8bf,
+  	  	  	  	.Dy3 = 0xff9cc25725238e55 };
+  touch1.coef = coef;
+*/
+  /* Калибровка тачскрина
+   * Если коэффициенты калибровки выше определены, то эту строку надо
+   * закомментировать */
   XPT2046_CalibrateTouch(&touch1, lcd); //Запускаем процедуру калибровки
+
+  /* Вывод на дисплей 64 битных коэффициентов калибровки для тех,
+   * кто не умеет пользоваться отладчиком или для тех,
+   * у кого он не работает. До использования не забудьте раскомментировать
+   * функцию convert64bit_to_hex */
+  /*
+  char b[100];
+  convert64bit_to_hex((uint8_t*)(&touch1.coef.D), b);
+  LCD_WriteString(lcd, 0, 0, b, &Font_12x20, COLOR_YELLOW, COLOR_BLUE, LCD_SYMBOL_PRINT_FAST);
+  convert64bit_to_hex((uint8_t*)(&touch1.coef.Dx1), b);
+  LCD_WriteString(lcd, 0, 20, b, &Font_12x20, COLOR_YELLOW, COLOR_BLUE, LCD_SYMBOL_PRINT_FAST);
+  convert64bit_to_hex((uint8_t*)(&touch1.coef.Dx2), b);
+  LCD_WriteString(lcd, 0, 40, b, &Font_12x20, COLOR_YELLOW, COLOR_BLUE, LCD_SYMBOL_PRINT_FAST);
+  convert64bit_to_hex((uint8_t*)(&touch1.coef.Dx3), b);
+  LCD_WriteString(lcd, 0, 60, b, &Font_12x20, COLOR_YELLOW, COLOR_BLUE, LCD_SYMBOL_PRINT_FAST);
+  convert64bit_to_hex((uint8_t*)(&touch1.coef.Dy1), b);
+  LCD_WriteString(lcd, 0, 80, b, &Font_12x20, COLOR_YELLOW, COLOR_BLUE, LCD_SYMBOL_PRINT_FAST);
+  convert64bit_to_hex((uint8_t*)(&touch1.coef.Dy2), b);
+  LCD_WriteString(lcd, 0, 100, b, &Font_12x20, COLOR_YELLOW, COLOR_BLUE, LCD_SYMBOL_PRINT_FAST);
+  convert64bit_to_hex((uint8_t*)(&touch1.coef.Dy3), b);
+  LCD_WriteString(lcd, 0, 120, b, &Font_12x20, COLOR_YELLOW, COLOR_BLUE, LCD_SYMBOL_PRINT_FAST);
+while(1) { }
+  //После того, как перенесете параметры в coef это все "дело" закомментируйте
+*/
+
   /* --------------------------------------------------------------------------------------------------*/
 
   //----------------------------------------- Запуск демок --------------------------------------------*/
@@ -282,7 +339,7 @@ static void MX_SPI1_Init(void)
   GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
   GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_VERY_HIGH;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
-  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
   GPIO_InitStruct.Alternate = LL_GPIO_AF_5;
   LL_GPIO_Init(T_OUT_GPIO_Port, &GPIO_InitStruct);
 

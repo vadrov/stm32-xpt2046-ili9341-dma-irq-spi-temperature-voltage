@@ -1,0 +1,2 @@
+calibrate_touch.c:54:6:XPT2046_ConvertPoint	1
+calibrate_touch.c:85:6:XPT2046_CalibrateTouch	17
