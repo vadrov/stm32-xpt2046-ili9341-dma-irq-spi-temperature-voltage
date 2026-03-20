@@ -148,7 +148,7 @@ void RoadCircleDemo(XPT2046_Handler *t, LCD_Handler *lcd)
 				}
 				temp /= SMA_per;
 			}
-			utoa(temp, &st[8], 10);
+			itoa(temp, &st[8], 10);
 			strcat(st, "   ");
 			LCD_WriteString(lcd, 0, 13, st, &Font_8x13, COLOR_YELLOW, COLOR_BLUE, LCD_SYMBOL_PRINT_FAST);
 		}
