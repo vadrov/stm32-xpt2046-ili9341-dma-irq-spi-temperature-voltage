@@ -1,7 +1,51 @@
 Copyright (C) 2019, VadRov, all right reserved / www.youtube.com/@VadRov / www.dzen.ru/vadrov
 # XPT2046 controller driver (stm32f4, ili9341, xpt2046, dma, irq, temperature, voltage)
  XPT2046 controller driver (HR2046 and other compatible). Supports all the functionality of the controller: work with the touchscreen, temperature measurement by an internal sensor, voltage measurement at the VBAT and AUX inputs.
- 
+
+**ВАЖНОЕ ЗАМЕЧАНИЕ**
+- В этом драйвере может быть использован, как внутренний, так и внешний источники опорного напряжения для измерений АЦП.
+- Если на вашей плате к 9 выводу микросхемы Vref подведено питание (как правило, накоротко соединено с VCC - 1 вывод м/с), то при измерениях АЦП всегда в качестве опорного напряжения будет использовать то напряжение, которое подведено в внешнему источнику Vref. Поэтому в даташите указано, что, если планируется использование внутреннего источника опорного напряжения, то вывод Vref должен оставаться неподключенным. То есть вывод Vref - это двунаправленный вывод, работающий как вход, если подключен источник внешнего опорного напряжения и как выход внутреннего источника опорного напряжения, если он включен соответствующим битом в управляющем байте. Эти тонкости не важны при использовании тачскрина, но критичны, если XPT2046 используется для измерения температуры (датчиком внутри самого чипа) и напряжений (на выводах Vbat и AUX). Неверная настройка управляющего байта и неправильное указание значения опорного напряжения в таких случаях существенно исказят измерения.
+- В файле xpt2046.h есть соответствующее макроопределение, влияющее на формат управляющих байтов:
+```c
+#define XPT2046_INTERNAL_VREF //Используем внутренний источник опорного напряжения.
+							    //Если используется внешний источник опорного напряжения,
+							    //то строку закомментируйте. Это для случая, если к выводу 9
+								//Vref не подключено питание, т.е. вывод свободен.
+```
+- Величину опорного напряжения для внутреннего и внешнего источников можно задать в том же файле соответствующими макроопределениями:
+```c
+#ifdef XPT2046_INTERNAL_VREF
+#define XPT2046_VREF  2500 //Напряжение внутреннего источника опорного напряжения.
+						   //Оно определено в спецификации на контроллер XPT2046 (2500 мВ +/- 50 мВ).
+
+#define XPT2046_VREF  3490 //Напряжение внешнего источника опорного напряжения.
+						   //Измеряется на 9 выводе микросхемы XPT2046 в корпусе TSSOP-16.
+						   //Здесь напряжение для моей платы. У вас может быть иным.
+						   //Это для случая, если к выводу 9 подключено питание (соединен с выводом VCC).
+#endif
+```
+**IMPORTANT NOTE**
+- This driver can use either internal or external reference voltage sources for ADC measurements.
+- If your board has power supplied to pin 9 of the Vref chip (usually shorted to VCC - pin 1 of the microcontroller), the ADC will always use the voltage supplied to the external Vref source as the reference voltage for measurements. Therefore, the datasheet states that if you plan to use the internal reference voltage source, the Vref pin should be left unconnected. This means that the Vref pin is a bidirectional pin, functioning as an input if an external reference voltage source is connected, and as an output of the internal reference voltage source if enabled by the corresponding bit in the control byte. These subtleties are not important when using a touchscreen, but are critical if the XPT2046 is used to measure temperature (using the sensor inside the chip itself) and voltages (on the Vbat and AUX pins). Incorrectly setting the control byte and specifying the incorrect reference voltage value in such cases will significantly distort the measurements.
+- The xpt2046.h file contains a corresponding macro definition that affects the format of the control bytes:
+```c
+#define XPT2046_INTERNAL_VREF //Use the internal reference voltage source.
+//If an external reference voltage source is used,
+//then comment out this line. This is for the case when pin 9
+//Vref is not powered, i.e., the pin is idle.
+```
+- The reference voltage value for the internal and external sources can be specified in the same file using the corresponding macro definitions:
+```c
+#ifdef XPT2046_INTERNAL_VREF
+#define XPT2046_VREF 2500 //Voltage of the internal reference voltage source.
+//It is defined in the XPT2046 controller datasheet (2500 mV +/- 50 mV).
+
+#define XPT2046_VREF 3490 //The voltage of the external reference voltage source.
+//Measured at pin 9 of the XPT2046 chip in the TSSOP-16 package.
+//This voltage is for my board. Yours may be different.
+//This applies if pin 9 is powered (connected to the VCC pin).
+#endif
+``` 
 **Functions and features:**
 - Touch screen polling (in and out of the interrupt) with information about the coordinates and duration of the touch;
 - Determination of the status of the current touch of the touchscreen: no touch, click, hold;
