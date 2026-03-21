@@ -106,7 +106,7 @@ void RoadCircleDemo(XPT2046_Handler *t, LCD_Handler *lcd)
 	char str[40] = " Primitives/c = ";
 	char st[100] = " Temp = ";
 	int temp_buf[SMA_per];
-	int t_count = 1;
+	int t_count = 0;
 	int x0, y0;
 	uint32_t tick = millis, tick_t;
 	tPoint p;
